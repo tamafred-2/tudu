@@ -26,8 +26,8 @@ Built with Flutter, the project shares a single codebase across multiple platfor
 
 You can download and run the latest Android application directly on your device:
 
-* **[Download Tudu for Android (BETA APK)](app-release.apk)** 
-  *(Place the compiled `app-release.apk` file in your repository root folder, or change this link to your GitHub Releases download URL).*
+* **[Download Tudu for Android (BETA APK)](app-release.apk?raw=true)** 
+  *(Note: You must first place the compiled `app-release.apk` in your project root folder and push it to GitHub for this link to work. Once pushed, this link will download it directly!).*
 
 > [!NOTE]
 > **Android Installation Steps:**
