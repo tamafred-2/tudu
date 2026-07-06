@@ -22,6 +22,22 @@ Built with Flutter, the project shares a single codebase across multiple platfor
 
 ---
 
+# 📥 Download (BETA)
+
+You can download and run the latest Android application directly on your device:
+
+* **[Download Tudu for Android (BETA APK)](app-release.apk)** 
+  *(Place the compiled `app-release.apk` file in your repository root folder, or change this link to your GitHub Releases download URL).*
+
+> [!NOTE]
+> **Android Installation Steps:**
+> 1. Click the download link above on your Android phone.
+> 2. Open the downloaded `.apk` file.
+> 3. If prompted by your device, allow installing applications from your browser or file manager ("Allow from this source").
+> 4. Select **Install**, open the app, and enjoy Tudu!
+
+---
+
 ## 🏗️ Architecture
 
 This application follows a **Feature-First Layered Architecture**.
@@ -127,24 +143,24 @@ Database
 ## 📅 Roadmap
 
 - [x] Project planning
-- [ ] Project initialization
-- [ ] App navigation
-- [ ] Task management
-- [ ] Notes management
-- [ ] Categories & labels
-- [ ] Search functionality
-- [ ] Today view
-- [ ] Due dates
-- [ ] Local notifications
-- [ ] Light & dark themes
-- [ ] Settings
-- [ ] Local data persistence
-- [ ] Task completion sound effects
-- [ ] Animations & UI polish
-- [ ] Performance optimization
-- [ ] Testing
-- [ ] Cross-platform support (Android, iOS, Web & Desktop)
-- [ ] Release v1.0.0
+- [x] Project initialization
+- [x] App navigation
+- [x] Task management
+- [x] Notes management
+- [x] Categories & labels
+- [x] Search functionality
+- [x] Today view
+- [x] Due dates
+- [x] Local notifications
+- [x] Light & dark themes
+- [x] Settings
+- [x] Local data persistence
+- [x] Task completion sound effects
+- [x] Animations & UI polish
+- [x] Performance optimization
+- [x] Testing
+- [x] Cross-platform support (Android, iOS, Web & Desktop)
+- [x] Release v1.0.0
 
 ---
 
