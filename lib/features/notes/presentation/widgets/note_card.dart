@@ -152,6 +152,7 @@ class NoteCard extends StatelessWidget {
         final deletedNote = notesProvider.deleteNote(note.id);
 
         if (deletedNote != null) {
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Note "${note.title}" deleted'),
@@ -159,9 +160,10 @@ class NoteCard extends StatelessWidget {
                 label: 'Undo',
                 onPressed: () {
                   notesProvider.insertNote(noteIndex, deletedNote);
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 },
               ),
-              duration: const Duration(seconds: 4),
+              duration: const Duration(milliseconds: 2500),
             ),
           );
         }

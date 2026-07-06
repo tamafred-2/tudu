@@ -168,6 +168,7 @@ class TaskTile extends StatelessWidget {
         final deletedTask = tasksProvider.deleteTask(task.id);
         
         if (deletedTask != null) {
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Task "${task.title}" deleted'),
@@ -175,9 +176,10 @@ class TaskTile extends StatelessWidget {
                 label: 'Undo',
                 onPressed: () {
                   tasksProvider.insertTask(taskIndex, deletedTask);
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 },
               ),
-              duration: const Duration(seconds: 4),
+              duration: const Duration(milliseconds: 2500),
             ),
           );
         }
