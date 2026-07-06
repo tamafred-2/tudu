@@ -1,114 +1,154 @@
-# ✔️ Tudu
+# Tudu
 
-**Tiny tasks, cozy notes.**
 
-Tudu is a simple and cute mobile todo + notes app designed to help you stay organized without feeling overwhelmed. It focuses on quick actions, clean design, and a satisfying experience when completing tasks.
+> **A modern **cross-platform productivity application** built with **Flutter**, designed to help users manage daily tasks and notes**
 
----
-
-## ✨ Features
-
-* ✅ Create, edit, and delete tasks
-* 📝 Write simple notes and checklists
-* 📅 Today view for daily focus
-* 🔍 Search tasks and notes
-* 🏷️ Categories (Personal, Work, School, etc.)
-* 🌙 Dark mode support
-* 🔔 Local notifications (planned)
-* 🔊 Fun completion sound effect
+![Status](https://img.shields.io/badge/status-active%20development-brightgreen)
+![Platform](https://img.shields.io/badge/platform-cross--platform-02569B?logo=flutter&logoColor=white)
+![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter)
+![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?logo=dart)
+![Material 3](https://img.shields.io/badge/UI-Material%203-6750A4)
+![License](https://img.shields.io/badge/license-portfolio-lightgrey)
 
 ---
 
-## 📱 Tech Stack
+# 📖 Overview
 
-* **Framework:** Flutter
-* **Language:** Dart
-* **Storage:** Hive / SQLite (local)
-* **State Management:** Provider
-* **Notifications:** flutter_local_notifications
-* **Sound:** audioplayers
+Tudu is a lightweight productivity application focused on simplicity and everyday organization.
 
-All tools used are **free and beginner-friendly**.
+Instead of overwhelming users with unnecessary features, Tudu provides a cozy and enjoyable environment for managing tasks, taking notes, and staying organized.
+
+Built with Flutter, the project shares a single codebase across multiple platforms while following a scalable architecture and modern UI principles.
 
 ---
 
-## 📂 Project Structure
+## 🏗️ Architecture
 
-```
-lib/
-├── app/
-├── core/
-├── features/
-│   ├── home/
-│   ├── tasks/
-│   ├── notes/
-│   └── settings/
-├── services/
-└── main.dart
-```
+This application follows a **Feature-First Layered Architecture**.
 
----
+```text
+Presentation
+├── Screens
+├── Widgets
+└── Material 3 UI
 
-## 🚀 Getting Started
+Application
+├── Provider
+├── State Management
+└── Navigation
 
-### 1. Clone the repo
+Business
+├── Models
+├── Business Logic
+└── Utilities
 
-```bash
-git clone https://github.com/your-username/tudu.git
-cd tudu
-```
+Data Access
+├── Repositories
+├── Local Storage
+└── Services
 
-### 2. Install dependencies
-
-```bash
-flutter pub get
-```
-
-### 3. Run the app
-
-```bash
-flutter run
+Database
+├── Hive
+└── SQLite
 ```
 
 ---
 
-## 🎯 Roadmap
+## 🛠️ Tech Stack
 
-* [ ] Add tasks and notes
-* [ ] Task completion with sound
-* [ ] Categories and filters
-* [ ] Due dates and reminders
-* [ ] Search functionality
-* [ ] Dark mode
-* [ ] UI polish and animations
-
----
-
-## 🎨 Design Idea
-
-Tudu uses a cozy and minimal style with soft colors and a friendly feel.
-The goal is to make productivity feel light, not stressful.
+- Flutter
+- Dart
+- Material 3
+- Provider
+- Hive
+- SQLite
+- flutter_local_notifications
+- audioplayers
+- Git
+- GitHub
 
 ---
 
-## 🤝 Contributing
+## 🚀 Planned Features
 
-This is a personal project, but suggestions and ideas are welcome!
+### 📋 Tasks
+
+- Create, edit, and delete tasks
+- Mark tasks as completed
+- Today view
+- Due dates
+- Categories & labels
+- Task search
+- Priority levels
+
+### 📝 Notes
+
+- Create and edit notes
+- Rich text support *(planned)*
+- Checklists
+- Search notes
+- Pin important notes
+
+### 🎨 User Experience
+
+- Cozy minimal interface
+- Light & dark themes
+- Smooth animations
+- Task completion sound effects
+- Responsive layouts
+- Material 3 design
+
+### 🔔 Productivity
+
+- Local notifications
+- Daily reminders
+- Productivity insights
+- Calendar view *(planned)*
+- Recurring tasks *(planned)*
+
+### ⚙️ Settings
+
+- Theme customization
+- Notification preferences
+- Data backup & restore *(planned)*
+- About & app information
+
+### ☁️ Future
+
+- Cloud synchronization
+- Cross-device sync
+- User authentication
+- Multiple workspaces
+- Home screen widgets
+- Export & import data
 
 ---
 
-## 📄 License
+## 📅 Roadmap
 
-This project is open-source and free to use.
+- [x] Project planning
+- [ ] Project initialization
+- [ ] App navigation
+- [ ] Task management
+- [ ] Notes management
+- [ ] Categories & labels
+- [ ] Search functionality
+- [ ] Today view
+- [ ] Due dates
+- [ ] Local notifications
+- [ ] Light & dark themes
+- [ ] Settings
+- [ ] Local data persistence
+- [ ] Task completion sound effects
+- [ ] Animations & UI polish
+- [ ] Performance optimization
+- [ ] Testing
+- [ ] Cross-platform support (Android, iOS, Web & Desktop)
+- [ ] Release v1.0.0
 
 ---
 
-## 💡 Inspiration
+# 💡 Inspiration
 
-Built to be a simple alternative to complex productivity apps like Todoist and TickTick.
+Tudu is inspired by modern productivity applications such as **Todoist**, **TickTick**, and **Google Keep** while maintaining its own visual identity and implementation.
 
----
-
-## 🐣 Author
-
-Made with focus and curiosity.
