@@ -1,7 +1,6 @@
 # Tudu
 
-
-> **A modern **cross-platform productivity application** built with **Flutter**, designed to help users manage daily tasks and notes**
+> A modern cross-platform productivity app built with Flutter, designed to help users manage daily tasks and notes across Windows and mobile devices.
 
 ![Status](https://img.shields.io/badge/status-active%20development-brightgreen)
 ![Platform](https://img.shields.io/badge/platform-cross--platform-02569B?logo=flutter&logoColor=white)
@@ -14,7 +13,7 @@
 
 # 📖 Overview
 
-Tudu is a lightweight productivity application focused on simplicity and everyday organization.
+Tudu is a lightweight productivity app focused on simplicity and everyday organization.
 
 Instead of overwhelming users with unnecessary features, Tudu provides a cozy and enjoyable environment for managing tasks, taking notes, and staying organized.
 
@@ -82,6 +81,24 @@ Database
 - audioplayers
 - Git
 - GitHub
+
+## 🧪 Run locally
+
+### Windows
+
+```powershell
+flutter pub get
+flutter build windows --release
+```
+
+### Android / mobile
+
+```powershell
+flutter pub get
+flutter run
+```
+
+> For Windows builds, make sure Visual Studio Build Tools with the Desktop development with C++ workload are installed.
 
 ---
 
@@ -159,7 +176,7 @@ Database
 - [x] Animations & UI polish
 - [x] Performance optimization
 - [x] Testing
-- [x] Cross-platform support (Android, iOS, Web & Desktop)
+- [x] Cross-platform support (Windows, Android, iOS, Web & Desktop)
 - [x] Release v1.0.0
 
 ---
