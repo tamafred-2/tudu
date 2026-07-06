@@ -23,10 +23,11 @@ Built with Flutter, the project shares a single codebase across multiple platfor
 
 # 📥 Download (BETA)
 
-You can download and run the latest Android application directly on your device:
+You can download and run Tudu directly on your devices:
 
-* **[Download Tudu for Android (BETA APK)](app-release.apk?raw=true)** 
-  *(Note: You must first place the compiled `app-release.apk` in your project root folder and push it to GitHub for this link to work. Once pushed, this link will download it directly!).*
+### 📱 Android
+* **[Download Tudu for Android (APK)](app-release.apk?raw=true)** 
+  *(Note: Requires the compiled `app-release.apk` to be in the project root folder. Clicking this link on your phone downloads the app installer directly).*
 
 > [!NOTE]
 > **Android Installation Steps:**
@@ -34,6 +35,10 @@ You can download and run the latest Android application directly on your device:
 > 2. Open the downloaded `.apk` file.
 > 3. If prompted by your device, allow installing applications from your browser or file manager ("Allow from this source").
 > 4. Select **Install**, open the app, and enjoy Tudu!
+
+### 💻 Windows Desktop
+* **[Download Tudu for Windows (ZIP)](tudu-windows.zip?raw=true)**
+  *(Note: Requires compiling the release on a Windows machine with the C++ build toolchain, zipping the contents of `build/windows/runner/Release/` as `tudu-windows.zip`, and placing it in the root folder).*
 
 ---
 
