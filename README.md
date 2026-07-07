@@ -224,6 +224,7 @@ flutter run
 - [ ] Rich text support for notes
 - [ ] Home screen widgets (Android)
 - [ ] Reminders that work even when the app is closed (scheduled notifications)
+- [ ] Enhancement of dashboard Sun/moon icon, startup animation text, quick action to 1 button.
 
 ---
 
