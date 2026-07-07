@@ -113,7 +113,7 @@ class NotificationsProvider with ChangeNotifier {
   void sendTestNotification() {
     NotificationService.instance.showNotification(
       'Tudu Test Notification 🔔',
-      'It works! Browser local notifications are fully configured.',
+      'It works! Local notifications are fully configured.',
     );
   }
 

@@ -168,20 +168,24 @@ class TaskTile extends StatelessWidget {
         final deletedTask = tasksProvider.deleteTask(task.id);
         
         if (deletedTask != null) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.clearSnackBars();
+          final controller = messenger.showSnackBar(
             SnackBar(
               content: Text('Task "${task.title}" deleted'),
               action: SnackBarAction(
                 label: 'Undo',
                 onPressed: () {
                   tasksProvider.insertTask(taskIndex, deletedTask);
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  messenger.hideCurrentSnackBar();
                 },
               ),
-              duration: const Duration(milliseconds: 2500),
+              duration: const Duration(seconds: 4),
             ),
           );
+          // Snackbars with an action can persist under accessible navigation;
+          // force-close so it always disappears on its own.
+          Future.delayed(const Duration(seconds: 4), controller.close);
         }
       },
       child: buildCardContent(context),

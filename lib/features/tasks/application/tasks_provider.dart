@@ -43,41 +43,16 @@ class TasksProvider with ChangeNotifier {
   }
 
   void _loadInitialTasks() {
-    final now = DateTime.now();
-    _tasks.addAll([
+    _tasks.add(
       Task(
         id: '1',
-        title: 'Complete Tudu project setup',
-        categoryId: 'work',
-        dueDate: now,
-        isCompleted: false,
-        priority: TaskPriority.high,
-      ),
-      Task(
-        id: '2',
-        title: 'Install Flutter and Dart extensions',
-        categoryId: 'setup',
-        dueDate: now,
-        isCompleted: true,
-        priority: TaskPriority.medium,
-      ),
-      Task(
-        id: '3',
-        title: 'Draft app architecture diagram',
-        categoryId: 'design',
-        dueDate: now.add(const Duration(days: 1)),
-        isCompleted: false,
-        priority: TaskPriority.low,
-      ),
-      Task(
-        id: '4',
-        title: 'Review database persistence requirements',
-        categoryId: 'research',
-        dueDate: now.add(const Duration(days: 4)),
+        title: 'Welcome! Tap the circle to complete me ✅',
+        categoryId: 'general',
+        dueDate: DateTime.now(),
         isCompleted: false,
         priority: TaskPriority.medium,
       ),
-    ]);
+    );
   }
 
   // Add a task

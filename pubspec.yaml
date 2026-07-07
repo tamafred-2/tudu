@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   provider: ^6.1.5+1
   shared_preferences: ^2.5.5
+  flutter_local_notifications: ^22.0.1
+  audioplayers: ^6.8.1
 
 dev_dependencies:
   flutter_test:
@@ -47,9 +49,24 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/tudu-icon/icon-master-1024.png"
+  adaptive_icon_background: "#0F5A47"
+  adaptive_icon_foreground: "assets/tudu-icon/android-adaptive/ic_launcher_foreground-432.png"
+  windows:
+    generate: true
+    image_path: "assets/tudu-icon/icon-master-1024.png"
+    icon_size: 256
+  web:
+    generate: true
+    image_path: "assets/tudu-icon/icon-master-1024.png"
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -58,6 +75,10 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/sounds/
+    - assets/tudu-icon/rounded/icon-rounded-512.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

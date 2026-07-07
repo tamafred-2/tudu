@@ -121,14 +121,6 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                       width: 110,
                       height: 110,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            theme.colorScheme.primary,
-                            theme.colorScheme.secondary,
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
                         borderRadius: BorderRadius.circular(28),
                         boxShadow: [
                           BoxShadow(
@@ -138,10 +130,14 @@ class _AnimatedSplashScreenState extends State<AnimatedSplashScreen>
                           ),
                         ],
                       ),
-                      child: const Icon(
-                        Icons.check_rounded,
-                        size: 65,
-                        color: Colors.white,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(28),
+                        child: Image.asset(
+                          'assets/tudu-icon/rounded/icon-rounded-512.png',
+                          width: 110,
+                          height: 110,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),

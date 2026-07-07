@@ -43,41 +43,23 @@ class NotesProvider with ChangeNotifier {
   }
 
   void _loadInitialNotes() {
-    final now = DateTime.now();
-    _notes.addAll([
+    _notes.add(
       Note(
         id: '1',
-        title: 'Project Ideas 💡',
-        content: 'Build a productivity tool called Tudu using Flutter and Hive. Make it look beautiful and minimal, matching a cozy theme.',
-        modifiedTime: now,
+        title: 'Welcome to Tudu 🌿',
+        content: 'Here\'s how to get started:\n\n'
+            '• Tap the + button to add a new task or note\n'
+            '• Tap a task\'s circle to mark it complete\n'
+            '• Swipe a task or note sideways to delete it (with Undo)\n'
+            '• Pin important notes to keep them on top\n'
+            '• Organize everything with categories\n'
+            '• Set a daily reminder in Settings so you never miss a task\n\n'
+            'Delete this note whenever you\'re ready. Enjoy! ✨',
+        modifiedTime: DateTime.now(),
         isPinned: true,
-        categoryId: 'work',
+        categoryId: 'general',
       ),
-      Note(
-        id: '2',
-        title: 'Shopping List 🛒',
-        content: '- Milk\n- Apples\n- Almonds\n- Oatmeal\n- Honey\n- Dark chocolate 85%',
-        modifiedTime: now.subtract(const Duration(days: 1)),
-        isPinned: false,
-        categoryId: 'shopping',
-      ),
-      Note(
-        id: '3',
-        title: 'Meeting Notes 📝',
-        content: 'Discussed architecture design patterns. Agreed to use Feature-First Layered structure. State management: Provider.',
-        modifiedTime: now.subtract(const Duration(days: 2)),
-        isPinned: false,
-        categoryId: 'work',
-      ),
-      Note(
-        id: '4',
-        title: 'Flutter Resources 📚',
-        content: 'Check docs.flutter.dev for layout instructions. Learn more about responsive widgets like LayoutBuilder and MediaQuery.',
-        modifiedTime: now.subtract(const Duration(days: 8)),
-        isPinned: false,
-        categoryId: 'setup',
-      ),
-    ]);
+    );
   }
 
   // Add a note

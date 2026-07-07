@@ -315,12 +315,89 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 const Divider(height: 1, indent: 56),
                 ListTile(
+                  leading: const Icon(Icons.person_outline),
+                  title: const Text('Developer'),
+                  subtitle: const Text('Alfred M. Tamayo'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => _showDeveloperInfoDialog(context),
+                ),
+                const Divider(height: 1, indent: 56),
+                ListTile(
                   leading: const Icon(Icons.code),
-                  title: const Text('Developer info'),
-                  subtitle: const Text('Built with Flutter & Material 3'),
+                  title: const Text('Built with'),
+                  subtitle: const Text('Flutter, Dart & Material 3'),
                 ),
               ],
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showDeveloperInfoDialog(BuildContext context) {
+    final theme = Theme.of(context);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                'assets/tudu-icon/rounded/icon-rounded-512.png',
+                width: 40,
+                height: 40,
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Text('About Tudu'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Tudu — Your cozy space for focus',
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'A modern cross-platform productivity app for managing '
+              'daily tasks and notes, designed around simplicity and '
+              'everyday organization.',
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Developed & designed by',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Alfred M. Tamayo',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Built with Flutter, Dart & Material 3\nVersion 1.0.0 (Beta)',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
           ),
         ],
       ),

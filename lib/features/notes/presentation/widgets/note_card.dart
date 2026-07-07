@@ -152,20 +152,24 @@ class NoteCard extends StatelessWidget {
         final deletedNote = notesProvider.deleteNote(note.id);
 
         if (deletedNote != null) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
+          final messenger = ScaffoldMessenger.of(context);
+          messenger.clearSnackBars();
+          final controller = messenger.showSnackBar(
             SnackBar(
               content: Text('Note "${note.title}" deleted'),
               action: SnackBarAction(
                 label: 'Undo',
                 onPressed: () {
                   notesProvider.insertNote(noteIndex, deletedNote);
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  messenger.hideCurrentSnackBar();
                 },
               ),
-              duration: const Duration(milliseconds: 2500),
+              duration: const Duration(seconds: 4),
             ),
           );
+          // Snackbars with an action can persist under accessible navigation;
+          // force-close so it always disappears on its own.
+          Future.delayed(const Duration(seconds: 4), controller.close);
         }
       },
       child: transitionChild,

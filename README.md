@@ -1,6 +1,6 @@
 # Tudu
 
-> A modern cross-platform productivity app built with Flutter, designed to help users manage daily tasks and notes across Windows and mobile devices.
+> A modern cross-platform productivity app built with Flutter, designed to help users manage daily tasks and notes across Windows, Android, and the web — usable on iPhone, iPad, Mac, and Linux through the browser.
 
 ![Status](https://img.shields.io/badge/status-active%20development-brightgreen)
 ![Platform](https://img.shields.io/badge/platform-cross--platform-02569B?logo=flutter&logoColor=white)
@@ -25,6 +25,14 @@ Built with Flutter, the project shares a single codebase across multiple platfor
 
 You can download and run Tudu directly on your devices:
 
+| Platform | How to get it |
+|---|---|
+| 📱 Android | [Download the APK](app-release.apk) |
+| 💻 Windows | [Download the ZIP](tudu-windows.zip) |
+| 🌐 Web (any device) | [Open in browser](https://tamafred-2.github.io/tudu/) |
+| 🍎 iPhone / iPad / Mac | Use the [web version](https://tamafred-2.github.io/tudu/) (Add to Home Screen) |
+| 🐧 Linux | Use the [web version](https://tamafred-2.github.io/tudu/) or build from source |
+
 ### 📱 Android
 * **[Download Tudu for Android (APK)](app-release.apk)** 
   *(Note: Requires the compiled `app-release.apk` to be in the project root folder. Clicking this link on your phone downloads the app installer directly).*
@@ -38,7 +46,30 @@ You can download and run Tudu directly on your devices:
 
 ### 💻 Windows Desktop
 * **[Download Tudu for Windows (ZIP)](tudu-windows.zip)**
-  *(Note: Requires compiling the release on a Windows machine with the C++ build toolchain, zipping the contents of `build/windows/runner/Release/` as `tudu-windows.zip`, and placing it in the root folder).*
+
+> [!NOTE]
+> **Windows Installation Steps:**
+> 1. Click the download link above and save the ZIP file.
+> 2. Right-click the downloaded `tudu-windows.zip` and select **Extract All...**
+> 3. Open the extracted folder and double-click **`tudu.exe`** to launch the app.
+> 4. If Windows SmartScreen appears, click **More info** → **Run anyway** (the app is unsigned, which is normal for beta releases).
+>
+> No compiling or extra tools needed — the ZIP already contains the ready-to-run app.
+
+### 🌐 Web — iPhone, iPad, Mac, Linux & everything else
+* **[Open Tudu in your browser](https://tamafred-2.github.io/tudu/)** — no install needed, works on any device with a modern browser.
+
+> [!TIP]
+> On iPhone/iPad (Safari) or Android (Chrome), use **Share → Add to Home Screen** to install Tudu like a real app, with its own icon and full-screen experience.
+
+### 🍎 macOS / 🐧 Linux (native)
+Native desktop builds are supported by the codebase but not distributed yet (they must be compiled on their own platform). Use the web version above, or build from source:
+
+```bash
+flutter pub get
+flutter build macos --release   # on a Mac
+flutter build linux --release   # on Linux
+```
 
 ---
 
@@ -184,9 +215,27 @@ flutter run
 - [x] Cross-platform support (Windows, Android, iOS, Web & Desktop)
 - [x] Release v1.0.0
 
+### 🎯 Next Version (v1.1) — Milestones
+
+- [ ] **Backup & Restore to the cloud** — save and restore your tasks & notes using a free cloud service (Google Drive first, since it's free and most users already have it)
+- [ ] Export & import data as a local file (JSON) — works offline, no account needed
+- [ ] Recurring tasks
+- [ ] Calendar view
+- [ ] Rich text support for notes
+- [ ] Home screen widgets (Android)
+- [ ] Reminders that work even when the app is closed (scheduled notifications)
+
 ---
 
 # 💡 Inspiration
 
 Tudu is inspired by modern productivity applications such as **Todoist**, **TickTick**, and **Google Keep** while maintaining its own visual identity and implementation.
+
+---
+
+# 👨‍💻 Developer
+
+**Alfred M. Tamayo** — Design & Development
+
+Tudu is designed, built, and maintained by Alfred M. Tamayo as a portfolio project, covering the full journey from UI/UX design and architecture to cross-platform release builds for Windows and Android.
 
