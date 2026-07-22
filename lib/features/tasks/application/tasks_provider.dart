@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../business/models/task_model.dart';
 
+import '../../../shared/services/home_widget_service.dart';
+
 class TasksProvider with ChangeNotifier {
   final List<Task> _tasks = [];
 
@@ -28,6 +30,7 @@ class TasksProvider with ChangeNotifier {
       debugPrint('Failed to load tasks: $e');
       _loadInitialTasks();
     } finally {
+      HomeWidgetService.updateWidgetData(_tasks);
       notifyListeners();
     }
   }
@@ -37,6 +40,7 @@ class TasksProvider with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final String tasksJson = jsonEncode(_tasks.map((t) => t.toJson()).toList());
       await prefs.setString('custom_tasks', tasksJson);
+      HomeWidgetService.updateWidgetData(_tasks);
     } catch (e) {
       debugPrint('Failed to save tasks: $e');
     }
