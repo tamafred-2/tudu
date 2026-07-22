@@ -1,7 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:tudu/features/settings/application/update_provider.dart';
 
-class AppUpdateDialog extends StatelessWidget {
+class AppUpdateDialog extends StatefulWidget {
   final UpdateInfo updateInfo;
 
   const AppUpdateDialog({
@@ -15,6 +16,67 @@ class AppUpdateDialog extends StatelessWidget {
       barrierDismissible: true,
       builder: (context) => AppUpdateDialog(updateInfo: updateInfo),
     );
+  }
+
+  @override
+  State<AppUpdateDialog> createState() => _AppUpdateDialogState();
+}
+
+class _AppUpdateDialogState extends State<AppUpdateDialog> {
+  bool _isDownloading = false;
+  double _downloadProgress = 0.0;
+  String? _downloadedFilePath;
+  String? _errorMessage;
+
+  Future<void> _startDownload() async {
+    final downloadUrl = widget.updateInfo.downloadUrl;
+    final fileName = widget.updateInfo.fileName ??
+        (Platform.isWindows ? 'tudu-windows.zip' : 'app-release.apk');
+
+    if (downloadUrl == null || downloadUrl.isEmpty) {
+      // Fallback to browser download if no direct asset link exists
+      Navigator.pop(context);
+      UpdateProvider.launchUrl(widget.updateInfo.updateUrl);
+      return;
+    }
+
+    setState(() {
+      _isDownloading = true;
+      _downloadProgress = 0.0;
+      _errorMessage = null;
+    });
+
+    try {
+      final filePath = await UpdateProvider.downloadUpdateFile(
+        downloadUrl,
+        fileName,
+        onProgress: (progress) {
+          if (mounted) {
+            setState(() {
+              _downloadProgress = progress;
+            });
+          }
+        },
+      );
+
+      if (mounted) {
+        setState(() {
+          _isDownloading = false;
+          _downloadedFilePath = filePath;
+        });
+
+        // Automatically launch/open the downloaded file
+        await UpdateProvider.openDownloadedFile(filePath);
+      }
+    } catch (e) {
+      debugPrint('Download error: $e');
+      if (mounted) {
+        setState(() {
+          _isDownloading = false;
+          _errorMessage = 'Download failed. Tap to open in browser instead.';
+        });
+      }
+    }
   }
 
   @override
@@ -51,7 +113,7 @@ class AppUpdateDialog extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Version v${updateInfo.latestVersion}',
+                  'Version v${widget.updateInfo.latestVersion}',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.primary,
                     fontWeight: FontWeight.w600,
@@ -79,7 +141,7 @@ class AppUpdateDialog extends StatelessWidget {
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Installed: v${updateInfo.currentVersion}  ➔  Latest: v${updateInfo.latestVersion}',
+                      'Installed: v${widget.updateInfo.currentVersion}  ➔  Latest: v${widget.updateInfo.latestVersion}',
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -90,7 +152,7 @@ class AppUpdateDialog extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              updateInfo.releaseTitle.isNotEmpty ? updateInfo.releaseTitle : 'What\'s New',
+              widget.updateInfo.releaseTitle.isNotEmpty ? widget.updateInfo.releaseTitle : 'What\'s New',
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -107,47 +169,168 @@ class AppUpdateDialog extends StatelessWidget {
                 ),
               ),
               child: Text(
-                updateInfo.releaseNotes.isNotEmpty
-                    ? updateInfo.releaseNotes
+                widget.updateInfo.releaseNotes.isNotEmpty
+                    ? widget.updateInfo.releaseNotes
                     : 'A new version of Tudu is available with performance improvements and bug fixes.',
                 style: theme.textTheme.bodySmall?.copyWith(
                   height: 1.4,
                 ),
               ),
             ),
-            const SizedBox(height: 12),
-            Text(
-              'Update now to get the latest features without re-downloading manually.',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-                fontStyle: FontStyle.italic,
+            const SizedBox(height: 16),
+
+            // In-App Download Progress / Success / Error Card
+            if (_isDownloading) ...[
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: theme.colorScheme.primary.withValues(alpha: 0.3)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Downloading update package...',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                        Text(
+                          _downloadProgress >= 0
+                              ? '${(_downloadProgress * 100).toInt()}%'
+                              : 'Downloading...',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: _downloadProgress >= 0 ? _downloadProgress : null,
+                        minHeight: 6,
+                        backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                        valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
+            ] else if (_downloadedFilePath != null) ...[
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.green.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.green.withValues(alpha: 0.4)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.check_circle_rounded, color: Colors.green, size: 22),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'Download complete! Opening package...',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: Colors.green.shade800,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ] else if (_errorMessage != null) ...[
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.errorContainer.withValues(alpha: 0.5),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _errorMessage!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onErrorContainer,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        UpdateProvider.launchUrl(widget.updateInfo.updateUrl);
+                      },
+                      child: Text(
+                        '🌐 Open release page in browser instead ➔',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ] else ...[
+              Text(
+                'Tap "Update Now" to download directly inside Tudu.',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
           ],
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: const Text('Later'),
-        ),
-        ElevatedButton.icon(
-          onPressed: () {
-            Navigator.pop(context);
-            UpdateProvider.launchUrl(updateInfo.updateUrl);
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: theme.colorScheme.primary,
-            foregroundColor: theme.colorScheme.onPrimary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+        if (!_isDownloading)
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(_downloadedFilePath != null ? 'Close' : 'Later'),
           ),
-          icon: const Icon(Icons.open_in_browser_rounded, size: 18),
-          label: const Text('Update Now'),
-        ),
+        if (!_isDownloading && _downloadedFilePath != null) ...[
+          ElevatedButton.icon(
+            onPressed: () => UpdateProvider.openDownloadedFile(_downloadedFilePath!),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            icon: const Icon(Icons.launch_rounded, size: 18),
+            label: const Text('Open File'),
+          ),
+        ] else if (!_isDownloading) ...[
+          ElevatedButton.icon(
+            onPressed: _startDownload,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.colorScheme.primary,
+              foregroundColor: theme.colorScheme.onPrimary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+            ),
+            icon: const Icon(Icons.download_rounded, size: 18),
+            label: const Text('Update Now'),
+          ),
+        ],
       ],
     );
   }
 }
+

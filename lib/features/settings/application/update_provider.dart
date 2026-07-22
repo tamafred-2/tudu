@@ -10,6 +10,8 @@ class UpdateInfo {
   final String releaseTitle;
   final String releaseNotes;
   final String updateUrl;
+  final String? downloadUrl;
+  final String? fileName;
 
   const UpdateInfo({
     required this.currentVersion,
@@ -18,6 +20,8 @@ class UpdateInfo {
     required this.releaseTitle,
     required this.releaseNotes,
     required this.updateUrl,
+    this.downloadUrl,
+    this.fileName,
   });
 }
 
@@ -49,11 +53,13 @@ class UpdateProvider with ChangeNotifier {
   UpdateInfo simulateTestUpdate() {
     final info = UpdateInfo(
       currentVersion: currentAppVersion,
-      latestVersion: '1.1.0',
+      latestVersion: '1.1.1',
       isUpdateAvailable: true,
-      releaseTitle: 'Tudu v1.1.0 Feature Release 🚀',
-      releaseNotes: '• Sun-to-Moon day/night icon transitions\n• Task start & end time ranges\n• 30-min advance & exact start scheduled reminders\n• GitHub in-app update checker & alert dialogs',
+      releaseTitle: 'Tudu v1.1.1 Patch Release 🚀',
+      releaseNotes: '• Direct in-app update downloading & installer launch\n• Home screen widget optimizations\n• Performance enhancements',
       updateUrl: 'https://github.com/$githubRepo/releases/latest',
+      downloadUrl: 'https://github.com/$githubRepo/releases/download/v1.1.1/tudu-windows.zip',
+      fileName: Platform.isWindows ? 'tudu-windows.zip' : 'tudu-release.apk',
     );
     _latestUpdateInfo = info;
     _hasUpdate = true;
@@ -110,7 +116,7 @@ class UpdateProvider with ChangeNotifier {
     }
   }
 
-  /// Checks GitHub API for the latest release.
+  /// Checks GitHub API for the latest release and matches release assets for current OS.
   Future<UpdateInfo?> checkForUpdates({bool manual = false}) async {
     if (_isChecking) return _latestUpdateInfo;
 
@@ -139,7 +145,49 @@ class UpdateProvider with ChangeNotifier {
         final releaseNotes = json['body'] as String? ?? 'New version available on GitHub.';
         final htmlUrl = json['html_url'] as String? ?? 'https://github.com/$githubRepo/releases/latest';
 
+        String? assetDownloadUrl;
+        String? assetFileName;
+
+        if (json.containsKey('assets') && json['assets'] is List) {
+          final assets = json['assets'] as List;
+          for (final asset in assets) {
+            if (asset is Map<String, dynamic>) {
+              final name = (asset['name'] as String? ?? '').toLowerCase();
+              final downloadUrl = asset['browser_download_url'] as String?;
+
+              if (downloadUrl != null && downloadUrl.isNotEmpty) {
+                if (kIsWeb) {
+                  assetDownloadUrl = downloadUrl;
+                  assetFileName = asset['name'] as String?;
+                  break;
+                } else if (Platform.isWindows && (name.endsWith('.zip') || name.endsWith('.exe'))) {
+                  assetDownloadUrl = downloadUrl;
+                  assetFileName = asset['name'] as String?;
+                  break;
+                } else if (Platform.isAndroid && name.endsWith('.apk')) {
+                  assetDownloadUrl = downloadUrl;
+                  assetFileName = asset['name'] as String?;
+                  break;
+                }
+              }
+            }
+          }
+          // Fallback to first asset if no OS-specific match found
+          if (assetDownloadUrl == null && assets.isNotEmpty && assets.first is Map) {
+            final firstAsset = assets.first as Map<String, dynamic>;
+            assetDownloadUrl = firstAsset['browser_download_url'] as String?;
+            assetFileName = firstAsset['name'] as String?;
+          }
+        }
+
         final bool newVersionAvailable = isNewerVersion(currentAppVersion, tagName);
+
+        // Guarantee a direct download URL even if release assets list was not explicitly populated
+        if (assetDownloadUrl == null || assetDownloadUrl.isEmpty) {
+          final defaultFileName = Platform.isWindows ? 'tudu-windows.zip' : 'app-release.apk';
+          assetDownloadUrl = 'https://github.com/$githubRepo/releases/download/v$tagName/$defaultFileName';
+          assetFileName = defaultFileName;
+        }
 
         resultInfo = UpdateInfo(
           currentVersion: currentAppVersion,
@@ -148,6 +196,8 @@ class UpdateProvider with ChangeNotifier {
           releaseTitle: releaseTitle,
           releaseNotes: releaseNotes,
           updateUrl: htmlUrl,
+          downloadUrl: assetDownloadUrl,
+          fileName: assetFileName,
         );
       } else {
         // Fallback for offline or 404 repo
@@ -181,11 +231,103 @@ class UpdateProvider with ChangeNotifier {
     return resultInfo;
   }
 
-  /// Launch update URL in browser or default OS browser handler
+  /// Downloads the release file to system temporary directory with real-time progress.
+  /// Handles cross-domain HTTP 302/301 redirects (e.g. GitHub to AWS S3).
+  static Future<String> downloadUpdateFile(
+    String downloadUrl,
+    String fileName, {
+    required void Function(double progress) onProgress,
+  }) async {
+    final client = HttpClient();
+    client.connectionTimeout = const Duration(seconds: 20);
+    
+    // Create destination path in system temp
+    final tempDir = Directory.systemTemp;
+    final saveFile = File('${tempDir.path}${Platform.pathSeparator}$fileName');
+    if (await saveFile.exists()) {
+      try {
+        await saveFile.delete();
+      } catch (_) {}
+    }
+
+    String currentUrl = downloadUrl;
+    HttpClientResponse? response;
+
+    // Follow up to 5 HTTP redirects (GitHub Releases redirect to AWS S3)
+    for (int i = 0; i < 5; i++) {
+      final request = await client.getUrl(Uri.parse(currentUrl));
+      request.headers.set('User-Agent', 'TuduApp-UpdateDownloader');
+      request.followRedirects = false; // Handle redirects manually across domains
+
+      final res = await request.close();
+      if (res.statusCode >= 300 && res.statusCode < 400) {
+        final redirectLocation = res.headers.value(HttpHeaders.locationHeader);
+        if (redirectLocation != null && redirectLocation.isNotEmpty) {
+          currentUrl = redirectLocation;
+          continue;
+        }
+      }
+      response = res;
+      break;
+    }
+
+    if (response == null || response.statusCode != 200) {
+      client.close();
+      throw Exception('HTTP ${response?.statusCode ?? 'Unknown'} downloading update file');
+    }
+
+    final contentLength = response.contentLength;
+    int bytesDownloaded = 0;
+    final sink = saveFile.openWrite();
+
+    await for (final chunk in response) {
+      bytesDownloaded += chunk.length;
+      sink.add(chunk);
+      if (contentLength > 0) {
+        final progress = bytesDownloaded / contentLength;
+        onProgress(progress.clamp(0.0, 1.0));
+      } else {
+        onProgress(-1); // Indeterminate length
+      }
+    }
+
+    await sink.flush();
+    await sink.close();
+    client.close();
+
+    return saveFile.path;
+  }
+
+  /// Opens or executes the downloaded file on system (Windows/Android/macOS).
+  static Future<bool> openDownloadedFile(String filePath) async {
+    try {
+      if (kIsWeb) return false;
+
+      if (Platform.isWindows) {
+        final result = await Process.run('cmd', ['/c', 'start', '', filePath]);
+        return result.exitCode == 0;
+      } else if (Platform.isAndroid) {
+        final result = await Process.run('am', ['start', '-a', 'android.intent.action.VIEW', '-d', 'file://$filePath', '-t', 'application/vnd.android.package-archive']);
+        return result.exitCode == 0;
+      } else if (Platform.isMacOS) {
+        final result = await Process.run('open', [filePath]);
+        return result.exitCode == 0;
+      } else if (Platform.isLinux) {
+        final result = await Process.run('xdg-open', [filePath]);
+        return result.exitCode == 0;
+      }
+      return false;
+    } catch (e) {
+      debugPrint('Error opening downloaded file: $e');
+      return false;
+    }
+  }
+
+  /// Launch update URL in browser as fallback
   static Future<void> launchUrl(String url) async {
     try {
       if (kIsWeb) {
-        // Handled via Web HTML launcher or window.open in web environment
+        // Handled via Web HTML launcher or window.open
       } else {
         if (Platform.isWindows) {
           await Process.run('cmd', ['/c', 'start', '', url]);
@@ -200,3 +342,4 @@ class UpdateProvider with ChangeNotifier {
     }
   }
 }
+

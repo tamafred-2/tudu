@@ -35,6 +35,8 @@ void main() {
         releaseTitle: 'v1.1.0 Feature Release',
         releaseNotes: 'Added new theme options and task timers.',
         updateUrl: 'https://github.com/tamafred-2/tudu/releases/latest',
+        downloadUrl: 'https://github.com/tamafred-2/tudu/releases/download/v1.1.0/tudu-windows.zip',
+        fileName: 'tudu-windows.zip',
       );
 
       await tester.pumpWidget(
