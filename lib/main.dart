@@ -9,6 +9,7 @@ import 'features/categories/application/categories_provider.dart';
 import 'features/notifications/application/notification_service.dart';
 import 'features/notifications/application/notifications_provider.dart';
 import 'features/settings/application/settings_provider.dart';
+import 'features/settings/application/update_provider.dart';
 import 'shared/theme/theme.dart';
 import 'shared/theme/theme_provider.dart';
 
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CategoriesProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProvider(create: (_) => UpdateProvider()),
         ChangeNotifierProxyProvider<TasksProvider, NotificationsProvider>(
           create: (_) => NotificationsProvider(),
           update: (_, tasksProvider, notificationsProvider) {

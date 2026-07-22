@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:tudu/features/categories/presentation/widgets/category_manager_sheet.dart';
 import 'package:tudu/features/notifications/application/notifications_provider.dart';
 import 'package:tudu/features/settings/application/settings_provider.dart';
+import 'package:tudu/features/settings/application/update_provider.dart';
+import 'package:tudu/features/settings/presentation/widgets/update_dialog.dart';
 import 'package:tudu/shared/theme/theme_provider.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -136,6 +138,7 @@ class SettingsScreen extends StatelessWidget {
     final notificationsProvider = Provider.of<NotificationsProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
     final settingsProvider = Provider.of<SettingsProvider>(context);
+    final updateProvider = Provider.of<UpdateProvider>(context);
 
     String getThemeModeName(ThemeMode mode) {
       switch (mode) {
@@ -292,6 +295,77 @@ class SettingsScreen extends StatelessWidget {
                   subtitle: const Text('Simulate data download & restoration'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => _showBackupRestoreSheet(context),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Section: App Updates
+          _buildSectionHeader(context, 'App Updates'),
+          Card(
+            child: Column(
+              children: [
+                ListTile(
+                  leading: updateProvider.isChecking
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2.5),
+                        )
+                      : Icon(
+                          updateProvider.hasUpdate
+                              ? Icons.system_update_rounded
+                              : Icons.system_update_outlined,
+                          color: updateProvider.hasUpdate ? theme.colorScheme.primary : null,
+                        ),
+                  title: const Text('Check for Updates'),
+                  subtitle: Text(
+                    updateProvider.isChecking
+                        ? 'Checking for new releases on GitHub...'
+                        : updateProvider.hasUpdate
+                            ? 'New update available! (v${updateProvider.latestUpdateInfo?.latestVersion})'
+                            : 'Current version: v${UpdateProvider.currentAppVersion} (Latest)',
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: updateProvider.isChecking
+                      ? null
+                      : () async {
+                          final info = await updateProvider.checkForUpdates(manual: true);
+                          if (context.mounted) {
+                            if (info != null && info.isUpdateAvailable) {
+                              AppUpdateDialog.show(context, info);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('🎉 You are using the latest version of Tudu!'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          }
+                        },
+                ),
+                const Divider(height: 1, indent: 56),
+                ListTile(
+                  leading: const Icon(Icons.science_outlined, color: Colors.deepPurple),
+                  title: const Text('Test Update Alert Modal'),
+                  subtitle: const Text('Preview how the update notification dialog looks'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    final testInfo = updateProvider.simulateTestUpdate();
+                    AppUpdateDialog.show(context, testInfo);
+                  },
+                ),
+                const Divider(height: 1, indent: 56),
+                SwitchListTile(
+                  secondary: const Icon(Icons.autorenew_rounded),
+                  title: const Text('Auto-check on Startup'),
+                  subtitle: const Text('Automatically check for GitHub updates when app opens'),
+                  value: updateProvider.autoCheckOnStartup,
+                  onChanged: (val) {
+                    updateProvider.toggleAutoCheck(val);
+                  },
                 ),
               ],
             ),
