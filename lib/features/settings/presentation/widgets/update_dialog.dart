@@ -71,9 +71,12 @@ class _AppUpdateDialogState extends State<AppUpdateDialog> {
     } catch (e) {
       debugPrint('Download error: $e');
       if (mounted) {
+        final is404 = e.toString().contains('404');
         setState(() {
           _isDownloading = false;
-          _errorMessage = 'Download failed. Tap to open in browser instead.';
+          _errorMessage = is404
+              ? 'Package "$fileName" is missing from GitHub Release v${widget.updateInfo.latestVersion}.\n\nTo enable direct downloading in Tudu, edit your release on GitHub and upload "$fileName" under Assets.'
+              : 'Download failed: $e';
         });
       }
     }
