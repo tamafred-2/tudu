@@ -22,7 +22,7 @@ class UpdateInfo {
 }
 
 class UpdateProvider with ChangeNotifier {
-  static const String currentAppVersion = '1.0.0';
+  static const String currentAppVersion = '1.1.0';
   static const String githubRepo = 'tamafred-2/tudu';
 
   bool _isChecking = false;

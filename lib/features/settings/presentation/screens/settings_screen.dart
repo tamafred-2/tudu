@@ -381,7 +381,7 @@ class SettingsScreen extends StatelessWidget {
                   leading: const Icon(Icons.info_outline),
                   title: const Text('Version'),
                   trailing: Text(
-                    '1.0.0',
+                    'v${UpdateProvider.currentAppVersion}',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurfaceVariant,
                     ),
