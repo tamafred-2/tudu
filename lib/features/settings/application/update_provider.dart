@@ -58,7 +58,7 @@ class UpdateProvider with ChangeNotifier {
       releaseTitle: 'Tudu v1.1.1 Patch Release 🚀',
       releaseNotes: '• Direct in-app update downloading & installer launch\n• Home screen widget optimizations\n• Performance enhancements',
       updateUrl: 'https://github.com/$githubRepo/releases/latest',
-      downloadUrl: 'https://github.com/$githubRepo/releases/download/v1.1.1/tudu-windows.zip',
+      downloadUrl: 'simulate://tudu-test-update',
       fileName: Platform.isWindows ? 'tudu-windows.zip' : 'tudu-release.apk',
     );
     _latestUpdateInfo = info;
@@ -232,16 +232,12 @@ class UpdateProvider with ChangeNotifier {
   }
 
   /// Downloads the release file to system temporary directory with real-time progress.
-  /// Handles cross-domain HTTP 302/301 redirects (e.g. GitHub to AWS S3).
+  /// Handles cross-domain HTTP 302/301 redirects (e.g. GitHub to AWS S3) & simulated downloads.
   static Future<String> downloadUpdateFile(
     String downloadUrl,
     String fileName, {
     required void Function(double progress) onProgress,
   }) async {
-    final client = HttpClient();
-    client.connectionTimeout = const Duration(seconds: 20);
-    
-    // Create destination path in system temp
     final tempDir = Directory.systemTemp;
     final saveFile = File('${tempDir.path}${Platform.pathSeparator}$fileName');
     if (await saveFile.exists()) {
@@ -249,6 +245,19 @@ class UpdateProvider with ChangeNotifier {
         await saveFile.delete();
       } catch (_) {}
     }
+
+    // Handle simulated test downloads
+    if (downloadUrl.startsWith('simulate:')) {
+      for (int step = 1; step <= 10; step++) {
+        await Future.delayed(const Duration(milliseconds: 150));
+        onProgress(step / 10.0);
+      }
+      await saveFile.writeAsString('Tudu v1.1.1 Test Release Package');
+      return saveFile.path;
+    }
+
+    final client = HttpClient();
+    client.connectionTimeout = const Duration(seconds: 20);
 
     String currentUrl = downloadUrl;
     HttpClientResponse? response;
