@@ -34,31 +34,41 @@ void main() {
     });
 
     test('Task serialization and deserialization', () {
-      final dueDate = DateTime(2026, 7, 6);
+      final dueDate = DateTime(2026, 7, 6, 11, 0);
+      final startTime = DateTime(2026, 7, 6, 9, 30);
       final task = Task(
         id: 'task-1',
         title: 'Complete Coding Tasks',
         dueDate: dueDate,
+        startTime: startTime,
         priority: TaskPriority.high,
         categoryId: 'cat-1',
         isCompleted: true,
+        has30MinReminder: true,
+        hasStartReminder: true,
       );
 
       final json = task.toJson();
       expect(json['id'], 'task-1');
       expect(json['title'], 'Complete Coding Tasks');
       expect(json['dueDate'], dueDate.toIso8601String());
+      expect(json['startTime'], startTime.toIso8601String());
       expect(json['priority'], 'high');
       expect(json['categoryId'], 'cat-1');
       expect(json['isCompleted'], true);
+      expect(json['has30MinReminder'], true);
+      expect(json['hasStartReminder'], true);
 
       final deserialized = Task.fromJson(json);
       expect(deserialized.id, task.id);
       expect(deserialized.title, task.title);
       expect(deserialized.dueDate, task.dueDate);
+      expect(deserialized.startTime, task.startTime);
       expect(deserialized.priority, task.priority);
       expect(deserialized.categoryId, task.categoryId);
       expect(deserialized.isCompleted, task.isCompleted);
+      expect(deserialized.has30MinReminder, task.has30MinReminder);
+      expect(deserialized.hasStartReminder, task.hasStartReminder);
     });
 
     test('Note serialization and deserialization', () {
@@ -109,6 +119,24 @@ void main() {
       // Overdue is false if date is today or future
       expect(AppDateUtils.isOverdue(today, false), false);
       expect(AppDateUtils.isOverdue(tomorrow, false), false);
+
+      // Night calculation (>= 18 or < 6)
+      final daytime = DateTime(2026, 7, 22, 10, 0);
+      final nighttime1 = DateTime(2026, 7, 22, 20, 0);
+      final nighttime2 = DateTime(2026, 7, 22, 2, 0);
+
+      expect(AppDateUtils.isNight(daytime), false);
+      expect(AppDateUtils.isNight(nighttime1), true);
+      expect(AppDateUtils.isNight(nighttime2), true);
+
+      // Time formatting & range string
+      final t1 = DateTime(2026, 7, 22, 9, 30);
+      final t2 = DateTime(2026, 7, 22, 14, 15);
+      expect(AppDateUtils.formatTime(t1), '9:30 AM');
+      expect(AppDateUtils.formatTime(t2), '2:15 PM');
+
+      final timeRangeStr = AppDateUtils.getFriendlyTimeRangeString(dueDate: t2, startTime: t1);
+      expect(timeRangeStr, contains('9:30 AM - 2:15 PM'));
     });
   });
 

@@ -132,6 +132,9 @@ flutter build windows --release
 ```powershell
 flutter pub get
 flutter run
+
+# Build lightweight Release APK (~18 MB):
+flutter build apk --split-per-abi
 ```
 
 > For Windows builds, make sure Visual Studio Build Tools with the Desktop development with C++ workload are installed.
@@ -143,9 +146,10 @@ flutter run
 ### 📋 Tasks
 
 - Create, edit, and delete tasks
-- Mark tasks as completed
+- Task start & end time ranges (e.g. 09:00 AM - 10:30 AM)
+- Scheduled notifications (30-minute advance alert & exact start alert)
 - Today view
-- Due dates
+- Due dates & times
 - Categories & labels
 - Task search
 - Priority levels
@@ -153,13 +157,13 @@ flutter run
 ### 📝 Notes
 
 - Create and edit notes
-- Rich text support *(planned)*
 - Checklists
 - Search notes
 - Pin important notes
 
 ### 🎨 User Experience
 
+- Dynamic Sun ☀️ to Moon 🌙 animated transition at night
 - Cozy minimal interface
 - Light & dark themes
 - Smooth animations
@@ -167,29 +171,20 @@ flutter run
 - Responsive layouts
 - Material 3 design
 
-### 🔔 Productivity
+### 🔔 Productivity & App Updates
 
+- Scheduled task start reminders (30-min advance & start time alerts)
+- In-App GitHub Update Checker & Alert Reminders
 - Local notifications
 - Daily reminders
-- Productivity insights
-- Calendar view *(planned)*
-- Recurring tasks *(planned)*
 
 ### ⚙️ Settings
 
-- Theme customization
-- Notification preferences
-- Data backup & restore *(planned)*
+- Theme customization & Theme Mode options
+- Sound effect toggles
+- App update checker & startup auto-check preference
+- Backup & restore simulation
 - About & app information
-
-### ☁️ Future
-
-- Cloud synchronization
-- Cross-device sync
-- User authentication
-- Multiple workspaces
-- Home screen widgets
-- Export & import data
 
 ---
 
@@ -203,7 +198,10 @@ flutter run
 - [x] Categories & labels
 - [x] Search functionality
 - [x] Today view
-- [x] Due dates
+- [x] Due dates & time ranges
+- [x] Sun-to-Moon animated day/night transitions
+- [x] Task start time reminders (30-min advance & exact start alerts)
+- [x] In-app GitHub update checker & alert reminder system
 - [x] Local notifications
 - [x] Light & dark themes
 - [x] Settings
@@ -223,8 +221,6 @@ flutter run
 - [ ] Calendar view
 - [ ] Rich text support for notes
 - [ ] Home screen widgets (Android)
-- [ ] Reminders that work even when the app is closed (scheduled notifications)
-- [ ] Enhancement of dashboard Sun/moon icon, startup animation text, quick action to 1 button.
 
 ---
 

@@ -10,6 +10,7 @@ import 'package:tudu/features/notes/business/models/note_model.dart';
 import 'package:tudu/features/notes/application/notes_provider.dart';
 import 'package:tudu/features/notes/presentation/widgets/note_card.dart';
 import 'package:tudu/features/settings/application/settings_provider.dart';
+import 'package:tudu/shared/widgets/sun_moon_transition_icon.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -149,6 +150,52 @@ void main() {
       // Verify pin icon status represents note.isPinned (push_pin)
       final Icon pinIcon = tester.widget(find.byIcon(Icons.push_pin));
       expect(pinIcon.color, isNotNull);
+    });
+  });
+
+  group('SunMoonTransitionIcon Widget Tests', () {
+    testWidgets('Renders sun icon when isNightOverride is false', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: SunMoonTransitionIcon(isNightOverride: false),
+          ),
+        ),
+      );
+
+      expect(find.byIcon(Icons.wb_sunny_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.nights_stay_rounded), findsNothing);
+    });
+
+    testWidgets('Renders moon icon when isNightOverride is true', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: SunMoonTransitionIcon(isNightOverride: true),
+          ),
+        ),
+      );
+
+      expect(find.byIcon(Icons.nights_stay_rounded), findsOneWidget);
+      expect(find.byIcon(Icons.wb_sunny_rounded), findsNothing);
+    });
+
+    testWidgets('Tapping icon triggers animated transition between sun and moon', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: SunMoonTransitionIcon(isNightOverride: false),
+          ),
+        ),
+      );
+
+      expect(find.byIcon(Icons.wb_sunny_rounded), findsOneWidget);
+
+      // Tap icon to switch preview mode
+      await tester.tap(find.byType(SunMoonTransitionIcon));
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(Icons.nights_stay_rounded), findsOneWidget);
     });
   });
 }
