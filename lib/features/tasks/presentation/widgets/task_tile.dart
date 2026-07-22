@@ -24,7 +24,10 @@ class TaskTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isOverdue = AppDateUtils.isOverdue(task.dueDate, task.isCompleted);
-    final friendlyDate = AppDateUtils.getFriendlyDateString(task.dueDate);
+    final friendlyDate = AppDateUtils.getFriendlyTimeRangeString(
+      dueDate: task.dueDate,
+      startTime: task.startTime,
+    );
     final dateColor = isOverdue ? theme.colorScheme.error : theme.colorScheme.onSurfaceVariant;
     
     final tasksProvider = Provider.of<TasksProvider>(context, listen: false);
@@ -98,7 +101,7 @@ class TaskTile extends StatelessWidget {
                           ),
                           const SizedBox(width: 8),
                           Icon(
-                            Icons.calendar_today,
+                            task.startTime != null ? Icons.access_time_rounded : Icons.calendar_today,
                             size: 10,
                             color: dateColor,
                           ),

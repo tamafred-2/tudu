@@ -21,6 +21,12 @@ class _EditTaskSheetState extends State<EditTaskSheet> {
   late TaskPriority _selectedPriority;
   late DateTime _selectedDate;
 
+  late bool _hasTimeRange;
+  late TimeOfDay _startTimeOfDay;
+  late TimeOfDay _endTimeOfDay;
+  late bool _has30MinReminder;
+  late bool _hasStartReminder;
+
   @override
   void initState() {
     super.initState();
@@ -28,6 +34,18 @@ class _EditTaskSheetState extends State<EditTaskSheet> {
     _selectedCategoryId = widget.task.categoryId;
     _selectedPriority = widget.task.priority;
     _selectedDate = widget.task.dueDate;
+
+    _hasTimeRange = widget.task.startTime != null;
+    if (widget.task.startTime != null) {
+      _startTimeOfDay = TimeOfDay.fromDateTime(widget.task.startTime!);
+      _endTimeOfDay = TimeOfDay.fromDateTime(widget.task.dueDate);
+    } else {
+      _startTimeOfDay = const TimeOfDay(hour: 9, minute: 0);
+      _endTimeOfDay = const TimeOfDay(hour: 10, minute: 0);
+    }
+
+    _has30MinReminder = widget.task.has30MinReminder;
+    _hasStartReminder = widget.task.hasStartReminder;
   }
 
   @override
@@ -60,15 +78,66 @@ class _EditTaskSheetState extends State<EditTaskSheet> {
     }
   }
 
+  Future<void> _selectTime(BuildContext context, bool isStart) async {
+    final initial = isStart ? _startTimeOfDay : _endTimeOfDay;
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: initial,
+    );
+    if (picked != null) {
+      setState(() {
+        if (isStart) {
+          _startTimeOfDay = picked;
+          if (_endTimeOfDay.hour < _startTimeOfDay.hour ||
+              (_endTimeOfDay.hour == _startTimeOfDay.hour && _endTimeOfDay.minute < _startTimeOfDay.minute)) {
+            _endTimeOfDay = TimeOfDay(hour: (_startTimeOfDay.hour + 1) % 24, minute: _startTimeOfDay.minute);
+          }
+        } else {
+          _endTimeOfDay = picked;
+        }
+      });
+    }
+  }
+
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       final tasksProvider = Provider.of<TasksProvider>(context, listen: false);
       
+      DateTime dueDate;
+      DateTime? startTime;
+
+      if (_hasTimeRange) {
+        startTime = DateTime(
+          _selectedDate.year,
+          _selectedDate.month,
+          _selectedDate.day,
+          _startTimeOfDay.hour,
+          _startTimeOfDay.minute,
+        );
+        dueDate = DateTime(
+          _selectedDate.year,
+          _selectedDate.month,
+          _selectedDate.day,
+          _endTimeOfDay.hour,
+          _endTimeOfDay.minute,
+        );
+      } else {
+        startTime = null;
+        dueDate = DateTime(
+          _selectedDate.year,
+          _selectedDate.month,
+          _selectedDate.day,
+        );
+      }
+
       final updatedTask = widget.task.copyWith(
         title: _titleController.text.trim(),
         categoryId: _selectedCategoryId,
-        dueDate: _selectedDate,
+        dueDate: dueDate,
+        startTime: startTime,
         priority: _selectedPriority,
+        has30MinReminder: _hasTimeRange ? _has30MinReminder : false,
+        hasStartReminder: _hasTimeRange ? _hasStartReminder : false,
       );
 
       tasksProvider.updateTask(updatedTask);
@@ -250,6 +319,70 @@ class _EditTaskSheetState extends State<EditTaskSheet> {
                   child: const Text('Select Date'),
                 ),
               ),
+
+              // Time Range Toggle
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                secondary: const Icon(Icons.access_time_outlined),
+                title: const Text('Set Start & End Time'),
+                subtitle: const Text('Specify hours for this task'),
+                value: _hasTimeRange,
+                onChanged: (val) {
+                  setState(() {
+                    _hasTimeRange = val;
+                  });
+                },
+              ),
+
+              if (_hasTimeRange) ...[
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => _selectTime(context, true),
+                        icon: const Icon(Icons.play_circle_outline, size: 18),
+                        label: Text('Start: ${_startTimeOfDay.format(context)}'),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => _selectTime(context, false),
+                        icon: const Icon(Icons.stop_circle_outlined, size: 18),
+                        label: Text('End: ${_endTimeOfDay.format(context)}'),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                
+                // Reminder Checkboxes
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  title: const Text('Remind 30 mins before start'),
+                  secondary: const Icon(Icons.notifications_active_outlined, size: 20),
+                  value: _has30MinReminder,
+                  onChanged: (val) {
+                    setState(() {
+                      _has30MinReminder = val ?? true;
+                    });
+                  },
+                ),
+                CheckboxListTile(
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  title: const Text('Remind exactly when task starts'),
+                  secondary: const Icon(Icons.alarm, size: 20),
+                  value: _hasStartReminder,
+                  onChanged: (val) {
+                    setState(() {
+                      _hasStartReminder = val ?? true;
+                    });
+                  },
+                ),
+              ],
               const SizedBox(height: 24),
 
               // Buttons

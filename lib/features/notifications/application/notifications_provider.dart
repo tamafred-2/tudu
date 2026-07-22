@@ -65,12 +65,14 @@ class NotificationsProvider with ChangeNotifier {
   }
 
   TasksProvider? _tasksProvider;
+  final Set<String> _sentTaskReminders = {};
 
   void startReminderTimer(TasksProvider tasksProvider) {
     _tasksProvider = tasksProvider;
-    _reminderTimer ??= Timer.periodic(const Duration(seconds: 30), (timer) {
+    _reminderTimer ??= Timer.periodic(const Duration(seconds: 15), (timer) {
       if (_tasksProvider != null) {
         _checkAndSendReminder(_tasksProvider!);
+        _checkTaskStartReminders(_tasksProvider!);
       }
     });
   }
@@ -105,6 +107,53 @@ class NotificationsProvider with ChangeNotifier {
             'Daily Tasks Reminder 📅',
             'All caught up! No tasks left for today. Have a great day!',
           );
+        }
+      }
+    }
+  }
+
+  void _checkTaskStartReminders(TasksProvider tasksProvider) {
+    final now = DateTime.now();
+
+    for (final task in tasksProvider.tasks) {
+      if (task.isCompleted || task.startTime == null) continue;
+
+      final start = task.startTime!;
+
+      // Check 30 minutes before task starts
+      if (task.has30MinReminder) {
+        final reminderTime30 = start.subtract(const Duration(minutes: 30));
+        if (now.year == reminderTime30.year &&
+            now.month == reminderTime30.month &&
+            now.day == reminderTime30.day &&
+            now.hour == reminderTime30.hour &&
+            now.minute == reminderTime30.minute) {
+          final key = '${task.id}_30min_${start.millisecondsSinceEpoch}';
+          if (!_sentTaskReminders.contains(key)) {
+            _sentTaskReminders.add(key);
+            NotificationService.instance.showNotification(
+              'Upcoming Task ⏰',
+              'Task "${task.title}" starts in 30 minutes (${AppDateUtils.formatTime(start)})!',
+            );
+          }
+        }
+      }
+
+      // Check exactly when task starts
+      if (task.hasStartReminder) {
+        if (now.year == start.year &&
+            now.month == start.month &&
+            now.day == start.day &&
+            now.hour == start.hour &&
+            now.minute == start.minute) {
+          final key = '${task.id}_start_${start.millisecondsSinceEpoch}';
+          if (!_sentTaskReminders.contains(key)) {
+            _sentTaskReminders.add(key);
+            NotificationService.instance.showNotification(
+              'Task Starting Now 🚀',
+              'It\'s time for "${task.title}" (${AppDateUtils.formatTime(start)})!',
+            );
+          }
         }
       }
     }
