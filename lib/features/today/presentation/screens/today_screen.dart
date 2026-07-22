@@ -7,6 +7,7 @@ import 'package:tudu/features/notes/presentation/widgets/note_editor_sheet.dart'
 import 'package:tudu/features/categories/presentation/widgets/category_manager_sheet.dart';
 import 'package:tudu/features/tasks/presentation/widgets/task_tile.dart';
 import 'package:tudu/shared/utils/date_utils.dart';
+import 'package:tudu/shared/widgets/sun_moon_transition_icon.dart';
 
 class TodayScreen extends StatefulWidget {
   const TodayScreen({super.key});
@@ -147,10 +148,9 @@ class _TodayScreenState extends State<TodayScreen> {
                     ),
                   ],
                 ),
-                Icon(
-                  Icons.wb_sunny,
+                const SunMoonTransitionIcon(
                   size: 40,
-                  color: Colors.amber.shade600,
+                  showGlow: true,
                 ),
               ],
             ),
@@ -412,10 +412,9 @@ class _TodayScreenState extends State<TodayScreen> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(
-                            Icons.wb_sunny_outlined,
+                          const SunMoonTransitionIcon(
                             size: 48,
-                            color: theme.colorScheme.secondary.withValues(alpha: 0.5),
+                            isOutlined: true,
                           ),
                           const SizedBox(height: 12),
                           Text(

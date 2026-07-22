@@ -5,9 +5,36 @@ import 'package:tudu/features/today/presentation/screens/today_screen.dart';
 import 'package:tudu/features/tasks/presentation/screens/tasks_screen.dart';
 import 'package:tudu/features/notes/presentation/screens/notes_screen.dart';
 import 'package:tudu/features/settings/presentation/screens/settings_screen.dart';
+import 'package:tudu/features/settings/application/update_provider.dart';
+import 'package:tudu/features/settings/presentation/widgets/update_dialog.dart';
+import 'package:tudu/shared/utils/date_utils.dart';
 
-class NavigationShell extends StatelessWidget {
+class NavigationShell extends StatefulWidget {
   const NavigationShell({super.key});
+
+  @override
+  State<NavigationShell> createState() => _NavigationShellState();
+}
+
+class _NavigationShellState extends State<NavigationShell> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAutoUpdate();
+    });
+  }
+
+  Future<void> _checkAutoUpdate() async {
+    final updateProvider = Provider.of<UpdateProvider>(context, listen: false);
+    if (updateProvider.autoCheckOnStartup && !updateProvider.hasPromptedThisSession) {
+      updateProvider.markPrompted();
+      final info = await updateProvider.checkForUpdates();
+      if (info != null && info.isUpdateAvailable && mounted) {
+        AppUpdateDialog.show(context, info);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,10 +101,10 @@ class _MobileNavigationLayout extends StatelessWidget {
         onDestinationSelected: (index) {
           navigationProvider.setIndex(index);
         },
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.wb_sunny_outlined),
-            selectedIcon: Icon(Icons.wb_sunny),
+            icon: Icon(AppDateUtils.isNight() ? Icons.nights_stay_outlined : Icons.wb_sunny_outlined),
+            selectedIcon: Icon(AppDateUtils.isNight() ? Icons.nights_stay : Icons.wb_sunny),
             label: 'Today',
           ),
           NavigationDestination(
@@ -139,11 +166,11 @@ class _TabletNavigationLayout extends StatelessWidget {
                 const SizedBox(height: 12),
               ],
             ),
-            destinations: const [
+            destinations: [
               NavigationRailDestination(
-                icon: Icon(Icons.wb_sunny_outlined),
-                selectedIcon: Icon(Icons.wb_sunny),
-                label: Text('Today'),
+                icon: Icon(AppDateUtils.isNight() ? Icons.nights_stay_outlined : Icons.wb_sunny_outlined),
+                selectedIcon: Icon(AppDateUtils.isNight() ? Icons.nights_stay : Icons.wb_sunny),
+                label: const Text('Today'),
               ),
               NavigationRailDestination(
                 icon: Icon(Icons.task_alt_outlined),
@@ -220,8 +247,8 @@ class _DesktopNavigationLayout extends StatelessWidget {
                     
                     // Sidebar Navigation Options
                     _DesktopDrawerTile(
-                      icon: Icons.wb_sunny_outlined,
-                      selectedIcon: Icons.wb_sunny,
+                      icon: AppDateUtils.isNight() ? Icons.nights_stay_outlined : Icons.wb_sunny_outlined,
+                      selectedIcon: AppDateUtils.isNight() ? Icons.nights_stay : Icons.wb_sunny,
                       label: 'Today',
                       selected: navigationProvider.currentTab == NavigationTab.today,
                       onTap: () => navigationProvider.setTab(NavigationTab.today),
