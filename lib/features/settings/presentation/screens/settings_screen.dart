@@ -276,16 +276,6 @@ class SettingsScreen extends StatelessWidget {
                       }
                     },
                   ),
-                  const Divider(height: 1, indent: 56),
-                  ListTile(
-                    leading: const Icon(Icons.notification_important_outlined),
-                    title: const Text('Send Test Notification'),
-                    subtitle: const Text('Trigger a test notification now'),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      notificationsProvider.sendTestNotification();
-                    },
-                  ),
                 ],
                 
                 const Divider(height: 1, indent: 56),
@@ -347,17 +337,7 @@ class SettingsScreen extends StatelessWidget {
                         },
                 ),
                 const Divider(height: 1, indent: 56),
-                ListTile(
-                  leading: const Icon(Icons.science_outlined, color: Colors.deepPurple),
-                  title: const Text('Test Update Alert Modal'),
-                  subtitle: const Text('Preview how the update notification dialog looks'),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () {
-                    final testInfo = updateProvider.simulateTestUpdate();
-                    AppUpdateDialog.show(context, testInfo);
-                  },
-                ),
-                const Divider(height: 1, indent: 56),
+
                 SwitchListTile(
                   secondary: const Icon(Icons.autorenew_rounded),
                   title: const Text('Auto-check on Startup'),
