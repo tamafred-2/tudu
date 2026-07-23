@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:open_file_plus/open_file_plus.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher_pkg;
 
@@ -28,7 +28,7 @@ class UpdateInfo {
 }
 
 class UpdateProvider with ChangeNotifier {
-  static const String currentAppVersion = '1.1.1';
+  static const String currentAppVersion = '1.1.2';
   static const String githubRepo = 'tamafred-2/tudu';
 
   bool _isChecking = false;
@@ -314,7 +314,7 @@ class UpdateProvider with ChangeNotifier {
     try {
       if (kIsWeb) return false;
 
-      final result = await OpenFile.open(filePath);
+      final result = await OpenFilex.open(filePath);
       if (result.type == ResultType.done) {
         return true;
       }
