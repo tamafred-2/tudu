@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:open_file_plus/open_file_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart' as url_launcher_pkg;
 
 class UpdateInfo {
   final String currentVersion;
@@ -312,18 +314,20 @@ class UpdateProvider with ChangeNotifier {
     try {
       if (kIsWeb) return false;
 
+      final result = await OpenFile.open(filePath);
+      if (result.type == ResultType.done) {
+        return true;
+      }
+
       if (Platform.isWindows) {
-        final result = await Process.run('cmd', ['/c', 'start', '', filePath]);
-        return result.exitCode == 0;
-      } else if (Platform.isAndroid) {
-        final result = await Process.run('am', ['start', '-a', 'android.intent.action.VIEW', '-d', 'file://$filePath', '-t', 'application/vnd.android.package-archive']);
-        return result.exitCode == 0;
+        final procRes = await Process.run('cmd', ['/c', 'start', '', filePath]);
+        return procRes.exitCode == 0;
       } else if (Platform.isMacOS) {
-        final result = await Process.run('open', [filePath]);
-        return result.exitCode == 0;
+        final procRes = await Process.run('open', [filePath]);
+        return procRes.exitCode == 0;
       } else if (Platform.isLinux) {
-        final result = await Process.run('xdg-open', [filePath]);
-        return result.exitCode == 0;
+        final procRes = await Process.run('xdg-open', [filePath]);
+        return procRes.exitCode == 0;
       }
       return false;
     } catch (e) {
@@ -335,16 +339,18 @@ class UpdateProvider with ChangeNotifier {
   /// Launch update URL in browser as fallback
   static Future<void> launchUrl(String url) async {
     try {
-      if (kIsWeb) {
-        // Handled via Web HTML launcher or window.open
-      } else {
-        if (Platform.isWindows) {
-          await Process.run('cmd', ['/c', 'start', '', url]);
-        } else if (Platform.isMacOS) {
-          await Process.run('open', [url]);
-        } else if (Platform.isLinux) {
-          await Process.run('xdg-open', [url]);
-        }
+      final uri = Uri.parse(url);
+      if (await url_launcher_pkg.canLaunchUrl(uri)) {
+        await url_launcher_pkg.launchUrl(
+          uri,
+          mode: url_launcher_pkg.LaunchMode.externalApplication,
+        );
+      } else if (Platform.isWindows) {
+        await Process.run('cmd', ['/c', 'start', '', url]);
+      } else if (Platform.isMacOS) {
+        await Process.run('open', [url]);
+      } else if (Platform.isLinux) {
+        await Process.run('xdg-open', [url]);
       }
     } catch (e) {
       debugPrint('Failed to launch URL: $e');
