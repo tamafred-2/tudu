@@ -2,6 +2,7 @@
 
 > A modern cross-platform productivity app built with Flutter, designed to help users manage daily tasks and notes across Windows, Android, and the web — usable on iPhone, iPad, Mac, and Linux through the browser.
 
+![Version](https://img.shields.io/badge/version-v1.1.2-008080)
 ![Status](https://img.shields.io/badge/status-active%20development-brightgreen)
 ![Platform](https://img.shields.io/badge/platform-cross--platform-02569B?logo=flutter&logoColor=white)
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter)
@@ -18,6 +19,17 @@ Tudu is a lightweight productivity app focused on simplicity and everyday organi
 Instead of overwhelming users with unnecessary features, Tudu provides a cozy and enjoyable environment for managing tasks, taking notes, and staying organized.
 
 Built with Flutter, the project shares a single codebase across multiple platforms while following a scalable architecture and modern UI principles.
+
+---
+
+# ✨ What's New in v1.1.2
+
+- 🎨 **Settings UI Consolidation**: Merged redundant "App Updates" and "About" sections into a unified **About & Updates** card with zero duplicate version labels.
+- 📦 **Package Upgrade**: Replaced legacy file openers with `open_filex` for smoother cross-platform package launch and Android APK updates.
+- 📲 **In-App Direct Update Installer** *(from v1.1.1)*: Automatically download and launch release updates (Android `.apk` or Windows `.zip`) directly within the app.
+- 📱 **Android Home Screen Widgets** *(from v1.1.0)*: Track today's tasks straight from your Android device home screen.
+- ⏰ **Task Start/End Time Ranges & Reminders** *(from v1.1.0)*: Set specific time ranges with scheduled 30-minute advance notifications and exact start-time alerts.
+- ☀️🌙 **Sun-to-Moon Animated Transition** *(from v1.1.0)*: Dynamic app bar header animation that transforms between day and night.
 
 ---
 
@@ -73,7 +85,46 @@ flutter build linux --release   # on Linux
 
 ---
 
-## 🏗️ Architecture
+# 🚀 Features
+
+### 📋 Tasks
+- Create, edit, search, and delete tasks
+- Task start & end time ranges (e.g. 09:00 AM - 10:30 AM)
+- Scheduled notifications (30-minute advance alert & exact start alert)
+- Today view and overdue task tracking
+- Categories & custom color-coded labels
+- Priority levels & due dates
+
+### 📝 Notes
+- Create, edit, and organize notes
+- Interactive checklists
+- Instant note search
+- Pin important notes to the top
+
+### 📲 Android Home Screen Widgets
+- Quick view of today's tasks directly on your Android home screen
+
+### 🎨 User Experience
+- Dynamic Sun ☀️ to Moon 🌙 animated transition reflecting day and night
+- Cozy minimal Material 3 design
+- Light & dark themes (with system auto preference)
+- Task completion sound effects (`audioplayers`)
+- Smooth page transitions and micro-animations
+
+### 🔔 Notifications & In-App Updates
+- Local notifications (`flutter_local_notifications`) for task reminders
+- Configurable daily reminder notifications
+- In-App GitHub update checker with direct APK/ZIP download and auto-installation launch (`open_filex`)
+
+### ⚙️ Settings
+- Unified **About & Updates** card with update status, developer info, and startup preferences
+- Category manager sheet for custom category creation and palette management
+- Backup & restore simulation (JSON data file handler)
+- Sound effect and theme customization controls
+
+---
+
+# 🏗️ Architecture
 
 This application follows a **Feature-First Layered Architecture**.
 
@@ -105,20 +156,20 @@ Database
 
 ---
 
-## 🛠️ Tech Stack
+# 🛠️ Tech Stack
 
-- Flutter
-- Dart
-- Material 3
-- Provider
-- Hive
-- SQLite
-- flutter_local_notifications
-- audioplayers
-- Git
-- GitHub
+- **Flutter** & **Dart**
+- **Material 3** UI Framework
+- **Provider** for State Management
+- **Hive** & **SQLite** for Local Persistence
+- **flutter_local_notifications** for Reminders
+- **audioplayers** for Sound Effects
+- **open_filex** & **url_launcher** for Updates & File Launching
+- **Git** & **GitHub Actions / GitHub Pages**
 
-## 🧪 Run locally
+---
+
+# 🧪 Run Locally
 
 ### Windows
 
@@ -141,92 +192,33 @@ flutter build apk --split-per-abi
 
 ---
 
-## 🚀 Planned Features
+# 📅 Roadmap
 
-### 📋 Tasks
+- [x] Project planning & setup
+- [x] Task management & Notes management
+- [x] Categories, labels & search functionality
+- [x] Today view & overdue tracking
+- [x] Due dates & start/end time ranges
+- [x] Sun-to-Moon animated day/night header transitions
+- [x] Scheduled start time reminders (30-min advance & start-time alerts)
+- [x] In-app GitHub release update checker & direct update downloader/installer
+- [x] Android Home Screen Widgets
+- [x] Consolidated Settings UI & Version Management
+- [x] Release v1.1.2
 
-- Create, edit, and delete tasks
-- Task start & end time ranges (e.g. 09:00 AM - 10:30 AM)
-- Scheduled notifications (30-minute advance alert & exact start alert)
-- Today view
-- Due dates & times
-- Categories & labels
-- Task search
-- Priority levels
+### 🎯 Next Version (v1.2.0) — Milestones
 
-### 📝 Notes
-
-- Create and edit notes
-- Checklists
-- Search notes
-- Pin important notes
-
-### 🎨 User Experience
-
-- Dynamic Sun ☀️ to Moon 🌙 animated transition at night
-- Cozy minimal interface
-- Light & dark themes
-- Smooth animations
-- Task completion sound effects
-- Responsive layouts
-- Material 3 design
-
-### 🔔 Productivity & App Updates
-
-- Scheduled task start reminders (30-min advance & start time alerts)
-- In-App GitHub Update Checker & Alert Reminders
-- Local notifications
-- Daily reminders
-
-### ⚙️ Settings
-
-- Theme customization & Theme Mode options
-- Sound effect toggles
-- App update checker & startup auto-check preference
-- Backup & restore simulation
-- About & app information
-
----
-
-## 📅 Roadmap
-
-- [x] Project planning
-- [x] Project initialization
-- [x] App navigation
-- [x] Task management
-- [x] Notes management
-- [x] Categories & labels
-- [x] Search functionality
-- [x] Today view
-- [x] Due dates & time ranges
-- [x] Sun-to-Moon animated day/night transitions
-- [x] Task start time reminders (30-min advance & exact start alerts)
-- [x] In-app GitHub update checker & alert reminder system
-- [x] Local notifications
-- [x] Light & dark themes
-- [x] Settings
-- [x] Local data persistence
-- [x] Task completion sound effects
-- [x] Animations & UI polish
-- [x] Performance optimization
-- [x] Testing
-- [x] Cross-platform support (Windows, Android, iOS, Web & Desktop)
-- [x] Release v1.0.0
-
-### 🎯 Next Version (v1.1) — Milestones
-
-- [ ] **Backup & Restore to the cloud** — save and restore your tasks & notes using a free cloud service (Google Drive first, since it's free and most users already have it)
-- [ ] Export & import data as a local file (JSON) — works offline, no account needed
-- [ ] Recurring tasks
-- [ ] Calendar view
-- [ ] Rich text support for notes
-- [ ] Home screen widgets (Android)
+- [ ] **Backup & Restore to the Cloud** — Google Drive integration for cross-device sync
+- [ ] Export & import data as a local file (JSON) for offline backup
+- [ ] Recurring tasks (Daily, Weekly, Monthly)
+- [ ] Calendar view for scheduled tasks
+- [ ] Rich text editor support for notes
 
 ---
 
 # 💡 Inspiration
 
-Tudu is inspired by modern productivity applications such as **Todoist**, **TickTick**, and **Google Keep** while maintaining its own visual identity and implementation.
+Tudu is inspired by modern productivity applications such as **Todoist**, **TickTick**, and **Google Keep** while maintaining its own cozy visual identity and architecture.
 
 ---
 
@@ -234,5 +226,4 @@ Tudu is inspired by modern productivity applications such as **Todoist**, **Tick
 
 **Alfred M. Tamayo** — Design & Development
 
-Tudu is designed, built, and maintained by Alfred M. Tamayo as a portfolio project, covering the full journey from UI/UX design and architecture to cross-platform release builds for Windows and Android.
-
+Tudu is designed, built, and maintained by Alfred M. Tamayo as a portfolio project, covering the full journey from UI/UX design and architecture to cross-platform release builds for Windows, Android, and Web.
