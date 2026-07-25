@@ -55,9 +55,9 @@ class UpdateProvider with ChangeNotifier {
   UpdateInfo simulateTestUpdate() {
     final info = UpdateInfo(
       currentVersion: currentAppVersion,
-      latestVersion: '1.1.1',
+      latestVersion: '1.2.0',
       isUpdateAvailable: true,
-      releaseTitle: 'Tudu v1.1.1 Patch Release 🚀',
+      releaseTitle: 'Tudu v1.2.0 Release 🚀',
       releaseNotes: '• Direct in-app update downloading & installer launch\n• Home screen widget optimizations\n• Performance enhancements',
       updateUrl: 'https://github.com/$githubRepo/releases/latest',
       downloadUrl: 'simulate://tudu-test-update',

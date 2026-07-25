@@ -291,11 +291,29 @@ class SettingsScreen extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Section: App Updates
-          _buildSectionHeader(context, 'App Updates'),
+          // Section: About & Updates
+          _buildSectionHeader(context, 'About & Updates'),
           Card(
             child: Column(
               children: [
+                ListTile(
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset(
+                      'assets/tudu-icon/rounded/icon-rounded-512.png',
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                  title: const Text(
+                    'Tudu',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text('Version v${UpdateProvider.currentAppVersion} • By Alfred M. Tamayo'),
+                  trailing: const Icon(Icons.info_outline),
+                  onTap: () => _showDeveloperInfoDialog(context),
+                ),
+                const Divider(height: 1, indent: 56),
                 ListTile(
                   leading: updateProvider.isChecking
                       ? const SizedBox(
@@ -315,7 +333,7 @@ class SettingsScreen extends StatelessWidget {
                         ? 'Checking for new releases on GitHub...'
                         : updateProvider.hasUpdate
                             ? 'New update available! (v${updateProvider.latestUpdateInfo?.latestVersion})'
-                            : 'Current version: v${UpdateProvider.currentAppVersion} (Latest)',
+                            : 'Up to date (v${UpdateProvider.currentAppVersion})',
                   ),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: updateProvider.isChecking
@@ -337,49 +355,14 @@ class SettingsScreen extends StatelessWidget {
                         },
                 ),
                 const Divider(height: 1, indent: 56),
-
                 SwitchListTile(
                   secondary: const Icon(Icons.autorenew_rounded),
                   title: const Text('Auto-check on Startup'),
-                  subtitle: const Text('Automatically check for GitHub updates when app opens'),
+                  subtitle: const Text('Check for GitHub updates when app opens'),
                   value: updateProvider.autoCheckOnStartup,
                   onChanged: (val) {
                     updateProvider.toggleAutoCheck(val);
                   },
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16),
-
-          // Section: About
-          _buildSectionHeader(context, 'About'),
-          Card(
-            child: Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.info_outline),
-                  title: const Text('Version'),
-                  trailing: Text(
-                    'v${UpdateProvider.currentAppVersion}',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-                const Divider(height: 1, indent: 56),
-                ListTile(
-                  leading: const Icon(Icons.person_outline),
-                  title: const Text('Developer'),
-                  subtitle: const Text('Alfred M. Tamayo'),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => _showDeveloperInfoDialog(context),
-                ),
-                const Divider(height: 1, indent: 56),
-                ListTile(
-                  leading: const Icon(Icons.code),
-                  title: const Text('Built with'),
-                  subtitle: const Text('Flutter, Dart & Material 3'),
                 ),
               ],
             ),
@@ -441,7 +424,7 @@ class SettingsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Built with Flutter, Dart & Material 3\nVersion 1.0.0 (Beta)',
+              'Built with Flutter, Dart & Material 3\nVersion ${UpdateProvider.currentAppVersion}',
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
