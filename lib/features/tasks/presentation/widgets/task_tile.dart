@@ -113,6 +113,23 @@ class TaskTile extends StatelessWidget {
                               color: dateColor,
                             ),
                           ),
+                          if (task.recurrence != RecurrenceType.none) ...[
+                            const SizedBox(width: 6),
+                            Icon(
+                              Icons.repeat,
+                              size: 10,
+                              color: theme.colorScheme.primary,
+                            ),
+                            const SizedBox(width: 2),
+                            Text(
+                              AppDateUtils.getRecurrenceLabel(task.recurrence),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 10,
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
                           const SizedBox(width: 8),
                           Container(
                             width: 6,

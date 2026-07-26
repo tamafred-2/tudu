@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../business/models/task_model.dart';
 import '../../application/tasks_provider.dart';
 import 'package:tudu/features/categories/application/categories_provider.dart';
+import 'package:tudu/shared/utils/date_utils.dart';
 
 class AddTaskSheet extends StatefulWidget {
   const AddTaskSheet({super.key});
@@ -17,6 +18,7 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
   
   String _selectedCategoryId = 'general';
   TaskPriority _selectedPriority = TaskPriority.medium;
+  RecurrenceType _selectedRecurrence = RecurrenceType.none;
   DateTime _selectedDate = DateTime.now();
 
   bool _hasTimeRange = false;
@@ -118,6 +120,7 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
         isCompleted: false,
         has30MinReminder: _hasTimeRange ? _has30MinReminder : false,
         hasStartReminder: _hasTimeRange ? _hasStartReminder : false,
+        recurrence: _selectedRecurrence,
       );
 
       tasksProvider.addTask(newTask);
@@ -274,6 +277,40 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
                     ),
                   );
                 }).toList(),
+              ),
+              const SizedBox(height: 16),
+
+              // Recurrence Selector
+              Text(
+                'Repeat',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<RecurrenceType>(
+                value: _selectedRecurrence,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.repeat),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+                items: RecurrenceType.values.map((recurrence) {
+                  return DropdownMenuItem<RecurrenceType>(
+                    value: recurrence,
+                    child: Text(AppDateUtils.getRecurrenceLabel(recurrence)),
+                  );
+                }).toList(),
+                onChanged: (val) {
+                  if (val != null) {
+                    setState(() {
+                      _selectedRecurrence = val;
+                    });
+                  }
+                },
               ),
               const SizedBox(height: 16),
 
