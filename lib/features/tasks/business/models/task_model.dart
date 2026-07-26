@@ -4,6 +4,13 @@ enum TaskPriority {
   high,
 }
 
+enum RecurrenceType {
+  none,
+  daily,
+  weekly,
+  monthly,
+}
+
 class Task {
   final String id;
   final String title;
@@ -14,6 +21,7 @@ class Task {
   final String categoryId;
   final bool has30MinReminder;
   final bool hasStartReminder;
+  final RecurrenceType recurrence;
 
   const Task({
     required this.id,
@@ -25,6 +33,7 @@ class Task {
     this.categoryId = 'general',
     this.has30MinReminder = true,
     this.hasStartReminder = true,
+    this.recurrence = RecurrenceType.none,
   });
 
   Task copyWith({
@@ -37,6 +46,7 @@ class Task {
     String? categoryId,
     bool? has30MinReminder,
     bool? hasStartReminder,
+    RecurrenceType? recurrence,
   }) {
     return Task(
       id: id ?? this.id,
@@ -48,6 +58,7 @@ class Task {
       categoryId: categoryId ?? this.categoryId,
       has30MinReminder: has30MinReminder ?? this.has30MinReminder,
       hasStartReminder: hasStartReminder ?? this.hasStartReminder,
+      recurrence: recurrence ?? this.recurrence,
     );
   }
 
@@ -62,6 +73,7 @@ class Task {
       'categoryId': categoryId,
       'has30MinReminder': has30MinReminder,
       'hasStartReminder': hasStartReminder,
+      'recurrence': recurrence.name,
     };
   }
 
@@ -76,6 +88,9 @@ class Task {
       categoryId: json['categoryId'] as String? ?? 'general',
       has30MinReminder: json['has30MinReminder'] as bool? ?? true,
       hasStartReminder: json['hasStartReminder'] as bool? ?? true,
+      recurrence: json['recurrence'] != null
+          ? RecurrenceType.values.byName(json['recurrence'] as String)
+          : RecurrenceType.none,
     );
   }
 }
