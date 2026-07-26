@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../business/models/task_model.dart';
+import '../../../shared/utils/date_utils.dart';
 
 import '../../../shared/services/home_widget_service.dart';
 
@@ -13,6 +14,10 @@ class TasksProvider with ChangeNotifier {
   }
 
   List<Task> get tasks => List.unmodifiable(_tasks);
+
+  Future<void> reloadFromStorage() async {
+    await _loadTasks();
+  }
 
   Future<void> _loadTasks() async {
     try {
@@ -79,7 +84,26 @@ class TasksProvider with ChangeNotifier {
   void toggleTaskCompletion(String id) {
     final index = _tasks.indexWhere((t) => t.id == id);
     if (index != -1) {
-      _tasks[index] = _tasks[index].copyWith(isCompleted: !_tasks[index].isCompleted);
+      final task = _tasks[index];
+      final willBeCompleted = !task.isCompleted;
+      _tasks[index] = task.copyWith(isCompleted: willBeCompleted);
+
+      // Auto-spawn next instance if completing a recurring task
+      if (willBeCompleted && task.recurrence != RecurrenceType.none) {
+        final nextDueDate = AppDateUtils.getNextOccurrence(task.dueDate, task.recurrence);
+        final nextStartTime = task.startTime != null
+            ? AppDateUtils.getNextOccurrence(task.startTime!, task.recurrence)
+            : null;
+
+        final nextTask = task.copyWith(
+          id: '${DateTime.now().millisecondsSinceEpoch}_${task.id}',
+          isCompleted: false,
+          dueDate: nextDueDate,
+          startTime: nextStartTime,
+        );
+        _tasks.add(nextTask);
+      }
+
       notifyListeners();
       _saveTasks();
     }
