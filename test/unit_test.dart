@@ -255,5 +255,56 @@ void main() {
       expect(provider.soundEffectsEnabled, false);
       expect(prefs.getBool('sound_effects_enabled'), false);
     });
+
+    test('Recurring task auto-spawning on completion', () async {
+      final provider = TasksProvider();
+      await Future.delayed(const Duration(milliseconds: 150));
+
+      final initialCount = provider.tasks.length;
+      final startDate = DateTime(2026, 7, 26, 9, 0);
+
+      final recurringTask = Task(
+        id: 'rec-1',
+        title: 'Daily Standup',
+        dueDate: startDate,
+        recurrence: RecurrenceType.daily,
+      );
+
+      provider.addTask(recurringTask);
+      expect(provider.tasks.length, initialCount + 1);
+
+      // Complete the recurring task
+      provider.toggleTaskCompletion('rec-1');
+
+      // The original task should be completed
+      final original = provider.tasks.firstWhere((t) => t.id == 'rec-1');
+      expect(original.isCompleted, true);
+
+      // A new task instance should be created for tomorrow
+      expect(provider.tasks.length, initialCount + 2);
+      final spawnedTask = provider.tasks.last;
+      expect(spawnedTask.isCompleted, false);
+      expect(spawnedTask.title, 'Daily Standup');
+      expect(spawnedTask.recurrence, RecurrenceType.daily);
+      expect(spawnedTask.dueDate, startDate.add(const Duration(days: 1)));
+    });
+
+    test('Recurrence date calculations in AppDateUtils', () {
+      final start = DateTime(2026, 7, 26, 10, 0);
+
+      final dailyNext = AppDateUtils.getNextOccurrence(start, RecurrenceType.daily);
+      expect(dailyNext, DateTime(2026, 7, 27, 10, 0));
+
+      final weeklyNext = AppDateUtils.getNextOccurrence(start, RecurrenceType.weekly);
+      expect(weeklyNext, DateTime(2026, 8, 2, 10, 0));
+
+      final monthlyNext = AppDateUtils.getNextOccurrence(start, RecurrenceType.monthly);
+      expect(monthlyNext, DateTime(2026, 8, 26, 10, 0));
+
+      expect(AppDateUtils.getRecurrenceLabel(RecurrenceType.daily), 'Daily');
+      expect(AppDateUtils.getRecurrenceLabel(RecurrenceType.weekly), 'Weekly');
+      expect(AppDateUtils.getRecurrenceLabel(RecurrenceType.monthly), 'Monthly');
+      expect(AppDateUtils.getRecurrenceLabel(RecurrenceType.none), 'Does not repeat');
+    });
   });
 }

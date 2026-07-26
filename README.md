@@ -2,7 +2,7 @@
 
 > A modern cross-platform productivity app built with Flutter, designed to help users manage daily tasks and notes across Windows, Android, and the web — usable on iPhone, iPad, Mac, and Linux through the browser.
 
-![Version](https://img.shields.io/badge/version-v1.1.2-008080)
+![Version](https://img.shields.io/badge/version-v1.2.0-008080)
 ![Status](https://img.shields.io/badge/status-active%20development-brightgreen)
 ![Platform](https://img.shields.io/badge/platform-cross--platform-02569B?logo=flutter&logoColor=white)
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter)
@@ -22,14 +22,12 @@ Built with Flutter, the project shares a single codebase across multiple platfor
 
 ---
 
-# ✨ What's New in v1.1.2
+# ✨ What's New in v1.2.0
 
-- 🎨 **Settings UI Consolidation**: Merged redundant "App Updates" and "About" sections into a unified **About & Updates** card with zero duplicate version labels.
-- 📦 **Package Upgrade**: Replaced legacy file openers with `open_filex` for smoother cross-platform package launch and Android APK updates.
-- 📲 **In-App Direct Update Installer** *(from v1.1.1)*: Automatically download and launch release updates (Android `.apk` or Windows `.zip`) directly within the app.
-- 📱 **Android Home Screen Widgets** *(from v1.1.0)*: Track today's tasks straight from your Android device home screen.
-- ⏰ **Task Start/End Time Ranges & Reminders** *(from v1.1.0)*: Set specific time ranges with scheduled 30-minute advance notifications and exact start-time alerts.
-- ☀️🌙 **Sun-to-Moon Animated Transition** *(from v1.1.0)*: Dynamic app bar header animation that transforms between day and night.
+- ☁️ **Google Drive Cloud Backup & Sync**: Backup and restore your tasks, notes, categories, and settings to your personal Google Drive for free using the secure `drive.appdata` scope.
+- 📁 **Local JSON File Export & Import**: Export `tudu_backup.json` or restore your data offline from local storage at any time.
+- 🎨 **Consolidated Settings UI**: Unified **About & Updates** card with zero duplicate version labels.
+- 📦 **Upgraded Package Stack**: Added `google_sign_in`, `googleapis`, `file_picker`, `path_provider`, and `open_filex`.
 
 ---
 
@@ -205,12 +203,13 @@ flutter build apk --split-per-abi
 - [x] Android Home Screen Widgets
 - [x] Consolidated Settings UI & Version Management
 - [x] Release v1.1.2
+- [x] Local JSON File Export & Import (offline backup & restore)
+- [x] Google Drive Cloud Backup & Sync (free cloud sync using `drive.appdata`)
+- [x] Release v1.2.0
 
-### 🎯 Next Version (v1.2.0) — Milestones
+### 🎯 Next Milestones (v1.2.x / v1.3.0)
 
-- [ ] **Backup & Restore to the Cloud** — Google Drive integration for cross-device sync
-- [ ] Export & import data as a local file (JSON) for offline backup
-- [ ] Recurring tasks (Daily, Weekly, Monthly)
+- [x] Recurring tasks (Daily, Weekly, Monthly)
 - [ ] Calendar view for scheduled tasks
 - [ ] Rich text editor support for notes
 
